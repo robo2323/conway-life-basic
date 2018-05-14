@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./css/index.css">
+    <script src="./js/index.js"></script>
+    <title>Flocking Simulation - Boids</title>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+<div id="menu">
+
+    <div class="menu-item">
+        <p>Boid Number</p>
+        <span class="plus-minus" id="boid-num-minus">- </span><span id="display-boid-num"></span><span class="plus-minus" id="boid-num-plus"> +</span>
+    </div>
+
+    <div class="menu-item">
+        <p>Speed</p>
+        <span class="plus-minus" id="speed-minus">- </span><span id="display-speed"></span><span class="plus-minus" id="speed-plus"> +</span>
+    </div>
+
+    <div class="menu-item">
+        <p>Flock Depth</p>
+        <span class="plus-minus" id="depth-minus">- </span><span id="display-depth"></span><span class="plus-minus" id="depth-plus"> +</span>
+    </div>
+
+    <div class="menu-item">
+        <p>Separation Min.</p>
+        <span class="plus-minus" id="sep-min-minus">- </span><span id="display-sep-min"></span><span class="plus-minus" id="sep-min-plus"> +</span>
+    </div>
+
+    <div class="menu-item">
+        <p>Separation Max.</p>
+        <span class="plus-minus" id="sep-max-minus">- </span><span id="display-sep-max"></span><span class="plus-minus" id="sep-max-plus"> +</span>
+    </div>
+
+    <div class="menu-item">
+        <p>Cohesion Scaler</p>
+        <span class="plus-minus" id="cohesion-scaler-minus">- </span><span id="display-cohesion-scaler"></span><span class="plus-minus" id="cohesion-scaler-plus"> +</span>
+    </div>
+
+    <div class="menu-item">
+        <p>Cohesion</p>
+        <span class="plus-minus" id="cohesion-minus">- </span><span id="display-cohesion"></span><span class="plus-minus" id="cohesion-plus"> +</span>
+    </div>
+
+    <div class="menu-item">
+        <p>Boid Width</p>
+        <span class="plus-minus" id="boid-width-minus">- </span><span id="display-boid-width"></span><span class="plus-minus" id="boid-width-plus"> +</span>
+    </div>
+
+    <div class="menu-item">
+        <p>Boid Type</p>
+        <span class="plus-minus" id="select-left">&larr; </span><span id="slide-container"><span id="display-boid-type"></span></span><span class="plus-minus" id="select-right"> &rarr;</span>
+    </div>
+
+<button id="random-cohesion">randomise cohesion</button>
+<button id="add-remove-obstacles">add/remove obstacles</button>
+    <button id="colorise">Change Colours</button>
+
+
+    <button id="respawn">restart</button>
+</div>
+
+</body>
+</html>
