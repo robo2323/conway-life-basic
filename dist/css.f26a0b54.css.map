@@ -1,0 +1,1 @@
+{"version":3,"sources":["src/css/src/css/index.less"],"names":[],"mappings":"AAAA;EACE,aAAA;;AAGF;EACE,aAAA;EACA,uBAAA;EACA,mBAAA;EACA,YAAA","file":"css.f26a0b54.css","sourceRoot":"..","sourcesContent":["body {\n  height: 100vh;\n}\n\n.flex-wrapper {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  height: 100%;\n}\n"]}
