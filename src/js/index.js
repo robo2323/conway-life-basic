@@ -1,5 +1,6 @@
 import { randomInteger } from "./utils/math";
 import drawNextGrid from "./drawNextGrid";
+import Creature from "./Creature";
 
 const animateLoop = (props) => {
   const grid = drawNextGrid(props);
@@ -21,20 +22,30 @@ const animateLoop = (props) => {
   const arrayHeight = height / squareSize;
   const arrayWidth = width / squareSize;
 
+  const creatures = [];
+
   const initialGrid = Array(arrayHeight)
     .fill(0)
-    .map(() =>
+    .map((_, rowIndex) =>
       Array(arrayWidth)
         .fill(0)
-        .map(() => (randomInteger(1, 10) > 4 ? 1 : 0))
+        .map((_, columnIndex) => {
+          const rand = randomInteger(1, 10) > 9 ? 1 : 0;
+          if (rand) {
+            creatures.push(new Creature(rowIndex, columnIndex));
+          }
+          return rand;
+        })
     );
+
+  const flatGrid = initialGrid.flat();
 
   animateLoop({
     hue: randomInteger(0, 36),
     ctx,
     width,
     height,
-    grid: initialGrid.flat(),
+    grid: flatGrid,
     squareSize,
     arrayHeight,
     arrayWidth
