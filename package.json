@@ -16,7 +16,7 @@
   "homepage": "https://github.com/robo2323/flocking-simulation-boids#readme",
   "dependencies": {
     "color": "^3.1.1",
-    "pixi.js": "^5.0.0"
+    "pixi.js": "^5.0.3"
   },
   "devDependencies": {
     "less": "^3.9.0",

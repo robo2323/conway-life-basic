@@ -1,7 +1,8 @@
 export default (() => {
   let cache = [];
 
-  return ({ hue, ctx, offscreenCtx, squareSize, grid }) => {
+  return ({ hue, ctx, squareSize, grid }) => {
+    ctx.clear()
     const nextGrid = grid.map((row, rowIndex) =>
       row.map((value, columnIndex) =>
         generate({
@@ -10,7 +11,6 @@ export default (() => {
           value,
           hue,
           ctx,
-          offscreenCtx,
           squareSize,
           grid,
           cache,
@@ -29,7 +29,6 @@ const generate = ({
   value,
   hue,
   ctx,
-  offscreenCtx,
   squareSize,
   grid,
   cache,
@@ -40,23 +39,22 @@ const generate = ({
   const cachedRow = cache[rowIndex] || [];
   const cached = cachedRow[columnIndex] || null;
   // update canvas with current grid
-  if (value !== cached) {
-    offscreenCtx.fillStyle = value
-      ? `hsla(${value * 2 * hue}, 100%, 60%)`
-      : "#333";
-    offscreenCtx.fillRect(
+  if (value !== cached) {    
+    ctx.lineStyle(1, 0x000000);
+    ctx.beginFill(value ? 0xf1f1f1f1 : 0x333333); //`hsla(${value * 2 * hue}, 100%, 60%)`
+    ctx.drawRect(
       columnIndex * squareSize,
       rowIndex * squareSize,
       squareSize,
       squareSize
     );
-    // ctx.strokeStyle="#777"
-    offscreenCtx.strokeRect(
-      columnIndex * squareSize,
-      rowIndex * squareSize,
-      squareSize,
-      squareSize
-    );
+    // // ctx.strokeStyle="#777"
+    // ctx.strokeRect(
+    //   columnIndex * squareSize,
+    //   rowIndex * squareSize,
+    //   squareSize,
+    //   squareSize
+    // );
   }
 
   let neighborsCount = 0;

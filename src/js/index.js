@@ -1,40 +1,48 @@
 import _ from "lodash";
+import * as PIXI from "pixi.js";
+
 import { randomInteger } from "./utils/math";
 import drawNextGrid from "./drawNextGrid";
 
 (() => {
   //TODO: set width and height from current window size
-  const width = 1800;
-  const height = 800;
+  const width = 1000;
+  const height = 1000;
   const squareSize = 10; //TODO:view
 
   let speed = 0; //TODO:view
 
-  const canvas = document.getElementById("canvas");
+  const app = new PIXI.Application({
+    width,
+    height,
+    backgroundColor: 0xffffff
+  });
 
-  canvas.width = width;
-  canvas.height = height;
-  const ctx = ""; //canvas.getContext("2d");
-  const offscreenCanvas = canvas.transferControlToOffscreen();
-  const offscreenCtx = offscreenCanvas.getContext("2d");
+  const appRoot = document.getElementById("app");
 
-  const runButton = document.getElementById("run");
+  appRoot.appendChild(app.view);
+
+  const ctx = new PIXI.Graphics();
+
+  app.stage.addChild(ctx);
+
+  // const runButton = document.getElementById("run");
 
   const arrayHeight = height / squareSize; //TODO:view
   const arrayWidth = width / squareSize; //TODO:view
-  let mousePos;
+  // let mousePos;
   let running = true; //TODO:view
 
-  // canvas.addEventListener("mousemove", (e) => setMousePos(e, canvas), false);
-  canvas.addEventListener("click", (e) => setMousePos(e, canvas), false);
-  runButton.addEventListener(
-    "click",
-    () => {
-      running = !running;
-      runButton.innerText = running ? "Pause Simulation" : "Restart Simulation";
-    },
-    false
-  );
+  // // canvas.addEventListener("mousemove", (e) => setMousePos(e, canvas), false);
+  // canvas.addEventListener("click", (e) => setMousePos(e, canvas), false);
+  // runButton.addEventListener(
+  //   "click",
+  //   () => {
+  //     running = !running;
+  //     runButton.innerText = running ? "Pause Simulation" : "Restart Simulation";
+  //   },
+  //   false
+  // );
 
   const initialGrid = Array(arrayHeight) //TODO:view
     .fill(0)
@@ -50,44 +58,43 @@ import drawNextGrid from "./drawNextGrid";
   const animateLoop = _.debounce(function(props) {
     const grid = running ? drawNextGrid(props) : props.grid;
 
-    if (mousePos) {
-      const mouseRow = grid[mousePos.x] || [];
-      const mouseValue = mouseRow[mousePos.y] || null;
+    // if (mousePos) {
+    //   const mouseRow = grid[mousePos.x] || [];
+    //   const mouseValue = mouseRow[mousePos.y] || null;
 
-      if (!mouseValue) {
-        grid[mousePos.x][mousePos.y] = randomInteger(1, 10);
-        offscreenCtx.fillStyle = "#f1f1f1";
-        offscreenCtx.fillRect(
-          mousePos.y * squareSize,
-          mousePos.x * squareSize,
-          squareSize,
-          squareSize
-        );
-        offscreenCtx.strokeRect(
-          mousePos.y * squareSize,
-          mousePos.x * squareSize,
-          squareSize,
-          squareSize
-        );
-      }
+    //   if (!mouseValue) {
+    //     grid[mousePos.x][mousePos.y] = randomInteger(1, 10);
+    //     offscreenCtx.fillStyle = "#f1f1f1";
+    //     offscreenCtx.fillRect(
+    //       mousePos.y * squareSize,
+    //       mousePos.x * squareSize,
+    //       squareSize,
+    //       squareSize
+    //     );
+    //     offscreenCtx.strokeRect(
+    //       mousePos.y * squareSize,
+    //       mousePos.x * squareSize,
+    //       squareSize,
+    //       squareSize
+    //     );
+    //   }
 
-      mousePos = "";
-    }
+    //   mousePos = "";
+    // }
     window.requestAnimationFrame(() => animateLoop({ ...props, grid }));
   }, speed);
 
-  function setMousePos(e, canvas) {
-    var rect = canvas.getBoundingClientRect();
-    mousePos = {
-      y: Math.floor((e.clientX - rect.left) / squareSize),
-      x: Math.floor((e.clientY - rect.top) / squareSize)
-    };
-  }
+  // function setMousePos(e, canvas) {
+  //   var rect = canvas.getBoundingClientRect();
+  //   mousePos = {
+  //     y: Math.floor((e.clientX - rect.left) / squareSize),
+  //     x: Math.floor((e.clientY - rect.top) / squareSize)
+  //   };
+  // }
 
   animateLoop({
     hue: randomInteger(10, 30),
     ctx,
-    offscreenCtx,
     width,
     height,
     grid: initialGrid,
