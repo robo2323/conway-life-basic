@@ -1,19 +1,22 @@
 export default (() => {
   let cache = [];
 
-  return ({ hue, ctx, squareSize, grid, arrayWidth, arrayHeight }) => {
-    const nextGrid = grid.map((value, index) =>
-      generate({
-        index,
-        value,
-        hue,
-        ctx,
-        squareSize,
-        grid,
-        arrayWidth,
-        arrayHeight,
-        cache
-      })
+  return ({ hue, ctx, offscreenCtx, squareSize, grid }) => {
+    const nextGrid = grid.map((row, rowIndex) =>
+      row.map((value, columnIndex) =>
+        generate({
+          rowIndex,
+          columnIndex,
+          value,
+          hue,
+          ctx,
+          offscreenCtx,
+          squareSize,
+          grid,
+          cache,
+          row
+        })
+      )
     );
     cache = grid;
     return nextGrid;
@@ -21,25 +24,34 @@ export default (() => {
 })();
 
 const generate = ({
-  index,
+  rowIndex,
+  columnIndex,
   value,
   hue,
   ctx,
+  offscreenCtx,
   squareSize,
   grid,
-  arrayWidth,
-  arrayHeight,
-  cache
+  cache,
+  row
 }) => {
-  const rowIndex = Math.floor((index / arrayWidth) % arrayHeight);
-  const columnIndex = index % arrayWidth;
-
+  // const rowIndex = Math.floor((index / arrayWidth) % arrayHeight);
+  // const columnIndex = index % arrayWidth;
+  const cachedRow = cache[rowIndex] || [];
+  const cached = cachedRow[columnIndex] || null;
   // update canvas with current grid
-  if (value !== cache[index]) {
-    ctx.fillStyle = value
-      ? `hsla(${-value * hue}, ${value * 10}%, 50%)`
+  if (value !== cached) {
+    offscreenCtx.fillStyle = value
+      ? `hsla(${value * 2 * hue}, 100%, 60%)`
       : "#333";
-    ctx.fillRect(
+    offscreenCtx.fillRect(
+      columnIndex * squareSize,
+      rowIndex * squareSize,
+      squareSize,
+      squareSize
+    );
+    // ctx.strokeStyle="#777"
+    offscreenCtx.strokeRect(
       columnIndex * squareSize,
       rowIndex * squareSize,
       squareSize,
@@ -47,33 +59,48 @@ const generate = ({
     );
   }
 
-  let neighbors = 0;
-  // const rowCount = grid.length;
-  // const columnCount = row.length;
+  let neighborsCount = 0;
+  const neighbors = [];
+  const rowCount = grid.length;
+  const columnCount = row.length;
 
-  // const wrappedVertical = rowIndex === 0 ? grid[rowCount - 1] : grid[0];
+  const wrappedRowIndex = rowIndex === 0 ? rowCount - 1 : 0;
+  const wrappedColumIndex = columnIndex === 0 ? columnCount - 1 : 0;
 
   for (let i = -1; i <= 1; i++) {
-    //const tempRow = grid[rowIndex + i] || wrappedVertical;
-
-    // const wrappedHorizontal =
-    //   columnIndex === 0 ? tempRow[columnCount - 1] : tempRow[0];
+    const tempRow = grid[rowIndex + i] || grid[wrappedRowIndex];
 
     for (let j = -1; j <= 1; j++) {
-      const newValue = grid[(rowIndex + i) * arrayWidth + columnIndex + j] || 0;
+      let newValue;
+      if (i === 0 && j === 0) {
+        newValue = 0;
+      } else {
+        const tempValue = tempRow[columnIndex + j];
+        newValue =
+          typeof tempValue === "number"
+            ? tempValue
+            : tempRow[wrappedColumIndex];
+      }
 
-      neighbors += newValue > 1 ? 1 : newValue;
+      newValue > 0 && neighbors.push(newValue);
+      neighborsCount += newValue > 0 ? 1 : 0;
     }
   }
 
-  neighbors -= value > 1 ? 1 : value;
-  if (value === 0 && neighbors === 3) {
-    return 10;
+  if (
+    value === 0 &&
+    neighborsCount === 3 //||
+    // neighborsCount === 5 ||
+    // neighborsCount === 5 ||
+    // neighborsCount === 7
+  ) {
+    const neighborsTotal = neighbors.reduce((acc, currVal) => acc + currVal);
+    return Math.round(neighborsTotal / neighbors.length);
+    // return 10
   }
 
-  if (value >= 1 && (neighbors > 3 || neighbors < 2)) {
+  if (value > 0 && (neighborsCount < 2 || neighborsCount > 3)) {
     return 0;
   }
-  const nextValue = value > 1 ? value - 1 : value;
-  return nextValue;
+  return value; // > 1 ? value - 1 : value;
 };
