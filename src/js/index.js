@@ -6,7 +6,7 @@ import drawNextGrid from "./drawNextGrid";
   //TODO: set width and height from current window size
   const width = 1800;
   const height = 800;
-  const squareSize = 10; //TODO:view
+  const squareSize = 4; //TODO:view
 
   let speed = 0; //TODO:view
 
@@ -51,9 +51,9 @@ import drawNextGrid from "./drawNextGrid";
     const grid = running ? drawNextGrid(props) : props.grid;
 
     if (mousePos) {
-      const mouseRow = grid[mousePos.x] || [];
-      const mouseValue = mouseRow[mousePos.y] || null;
-
+      const mouseRow = grid[mousePos.x];
+      const mouseValue =
+        typeof mouseRow === "object" ? mouseRow[mousePos.y] : false;
       if (!mouseValue) {
         grid[mousePos.x][mousePos.y] = randomInteger(1, 10);
         offscreenCtx.fillStyle = "#f1f1f1";
@@ -63,12 +63,14 @@ import drawNextGrid from "./drawNextGrid";
           squareSize,
           squareSize
         );
-        offscreenCtx.strokeRect(
-          mousePos.y * squareSize,
-          mousePos.x * squareSize,
-          squareSize,
-          squareSize
-        );
+        // offscreenCtx.strokeStyle = "#f1f1f1";
+
+        // offscreenCtx.strokeRect(
+        //   mousePos.y * squareSize,
+        //   mousePos.x * squareSize,
+        //   squareSize,
+        //   squareSize
+        // );
       }
 
       mousePos = "";

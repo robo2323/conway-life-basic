@@ -1,8 +1,35 @@
 export default (() => {
   let cache = [];
+  const neighbors = [];
+  let nextGrid = [];
+  // const nextRow = [];
 
   return ({ hue, ctx, offscreenCtx, squareSize, grid }) => {
-    const nextGrid = grid.map((row, rowIndex) =>
+    // nextGrid.length = 0;
+    // for (let rowIndex = 0; rowIndex < grid.length; rowIndex++) {
+    //   nextRow.length = 0;
+    //   for (let columnIndex = 0; columnIndex < grid[0].length; columnIndex++) {
+    //     nextRow.push(
+    //       generate({
+    //         rowIndex,
+    //         columnIndex,
+    //         value: grid[rowIndex][columnIndex],
+    //         hue,
+    //         ctx,
+    //         offscreenCtx,
+    //         squareSize,
+    //         grid,
+    //         cache,
+    //         neighbors,
+    //         row: grid[rowIndex]
+    //       })
+    //     );
+    //   }
+
+    //   nextGrid.push(nextRow);
+    // }
+
+     nextGrid = grid.map((row, rowIndex) =>
       row.map((value, columnIndex) =>
         generate({
           rowIndex,
@@ -14,10 +41,12 @@ export default (() => {
           squareSize,
           grid,
           cache,
+          neighbors,
           row
         })
       )
     );
+
     cache = grid;
     return nextGrid;
   };
@@ -28,39 +57,38 @@ const generate = ({
   columnIndex,
   value,
   hue,
-  ctx,
   offscreenCtx,
   squareSize,
   grid,
   cache,
+  neighbors,
   row
 }) => {
   // const rowIndex = Math.floor((index / arrayWidth) % arrayHeight);
   // const columnIndex = index % arrayWidth;
-  const cachedRow = cache[rowIndex] || [];
-  const cached = cachedRow[columnIndex] || null;
+  const cachedRow = cache[rowIndex];
+  const cached = typeof cachedRow === "object" ? cachedRow[columnIndex] : false;
   // update canvas with current grid
   if (value !== cached) {
-    offscreenCtx.fillStyle = value
-      ? `hsla(${value * 2 * hue}, 100%, 60%)`
-      : "#333";
+    const style = value ? `hsla(${value * 2 * hue}, 100%, 60%)` : "#333";
+    offscreenCtx.fillStyle = style;
     offscreenCtx.fillRect(
       columnIndex * squareSize,
       rowIndex * squareSize,
       squareSize,
       squareSize
     );
-    // ctx.strokeStyle="#777"
-    offscreenCtx.strokeRect(
-      columnIndex * squareSize,
-      rowIndex * squareSize,
-      squareSize,
-      squareSize
-    );
+    // offscreenCtx.strokeStyle = "#000"//style;
+    // offscreenCtx.strokeRect(
+    //   columnIndex * squareSize,
+    //   rowIndex * squareSize,
+    //   squareSize,
+    //   squareSize
+    // );
   }
 
+  neighbors.length = 0;
   let neighborsCount = 0;
-  const neighbors = [];
   const rowCount = grid.length;
   const columnCount = row.length;
 
@@ -90,7 +118,7 @@ const generate = ({
   if (
     value === 0 &&
     neighborsCount === 3 //||
-    // neighborsCount === 5 ||
+    // neighborsCount === 5
     // neighborsCount === 5 ||
     // neighborsCount === 7
   ) {
